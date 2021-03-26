@@ -22,14 +22,30 @@ auto getStopToken(Receiver)(Receiver r) nothrow @safe if (isReceiver!Receiver) {
   return NeverStopToken();
 }
 
+auto getScheduler(Receiver)(Receiver r) nothrow @safe if (isReceiver!Receiver) {
+  import concurrency.thread : ThreadScheduler;
+  return ThreadScheduler();
+}
+
+mixin template ForwardExtensionPoints(alias receiver) {
+  auto getStopToken() nothrow @safe {
+    return receiver.getStopToken();
+  }
+  auto getScheduler() nothrow @safe {
+    return receiver.getScheduler();
+  }
+}
+
 /// A polymorphic receiver of type T
 interface ReceiverObjectBase(T) {
   import concurrency.stoptoken : StopTokenObject;
+  import concurrency.scheduler : SchedulerObject;
   static assert (models!(ReceiverObjectBase!T, isReceiver));
   void setValue(T value = T.init) @safe;
   void setDone() nothrow @safe;
   void setError(Exception e) nothrow @safe;
   StopTokenObject getStopToken() nothrow @safe;
+  // SchedulerObject getScheduler() nothrow @safe;
 }
 
 struct NullReceiver(T) {

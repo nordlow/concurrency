@@ -39,7 +39,7 @@ private struct SSReceiver(Receiver, Value) {
     resetStopCallback();
     receiver.setError(e);
   }
-  auto getStopToken() {
+  auto getStopToken() nothrow @trusted {
     import core.atomic;
     if (this.combinedSource is null) {
       auto local = new StopSource();
