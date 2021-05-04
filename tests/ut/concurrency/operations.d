@@ -151,3 +151,10 @@ unittest {
   whenAll(ThrowingSender(), waitingInt).sync_wait.shouldThrow;
   whenAll(waitingInt, ThrowingSender()).sync_wait.shouldThrow;
 }
+
+@("whenAll.oob")
+unittest {
+  auto oob = OutOfBandValueSender!int(43);
+  auto value = ValueSender!int(11);
+  whenAll(oob, value).sync_wait().should == tuple(43, 11);
+}
